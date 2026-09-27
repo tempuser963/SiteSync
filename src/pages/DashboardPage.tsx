@@ -465,7 +465,7 @@ export const DashboardPage: React.FC = () => {
                         {evt.event}
                       </td>
                       <td className="py-3 px-3">
-                        <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 text-[11px] font-mono text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-700">
+                        <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 text-[11px] font-mono text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-700 whitespace-nowrap inline-block">
                           {evt.source}
                         </span>
                       </td>
