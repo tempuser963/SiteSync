@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useProject } from '../../context/ProjectContext';
 import { useAuth } from '../../auth/AuthContext';
@@ -22,8 +22,12 @@ import {
   ChevronRight,
   Shield,
   FileCheck,
+  Check,
+  HelpCircle,
+  ShieldCheck,
 } from 'lucide-react';
 import { Permission } from '../../types';
+import { Modal } from '../ui/Modal';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -41,9 +45,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
     currentProjectId,
     setCurrentProjectId,
     stats,
+    currentProject,
   } = useProject();
 
   const { user, hasPermission } = useAuth();
+
+  const [projectMenuOpen, setProjectMenuOpen] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const projectMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close project dropdown on outside click
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (projectMenuRef.current && !projectMenuRef.current.contains(e.target as Node)) {
+        setProjectMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
 
   // Filter projects by user's assigned projectIds (Admin has access to all)
   const accessibleProjects =
@@ -167,8 +187,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
       }`}
     >
       {/* Brand Header */}
-      <div className="h-14 flex items-center justify-between px-3 border-b border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="flex items-center gap-2.5 overflow-hidden">
+      <div
+        className={`h-14 flex items-center border-b border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 ${
+          collapsed ? 'justify-center px-0' : 'justify-between px-3'
+        }`}
+      >
+        <button
+          onClick={collapsed ? onToggleCollapse : undefined}
+          className={`flex items-center gap-2.5 overflow-hidden ${collapsed ? 'cursor-pointer' : 'cursor-default'}`}
+          title={collapsed ? 'Expand sidebar' : undefined}
+          aria-label={collapsed ? 'Expand sidebar' : undefined}
+        >
           <div className="w-8 h-8 rounded-md bg-brand dark:bg-yellow-400 dark:text-zinc-950 flex items-center justify-center text-white font-bold shrink-0 shadow-md shadow-brand/20 dark:shadow-yellow-400/20">
             <span className="text-base tracking-tighter">◈</span>
           </div>
@@ -182,16 +211,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </span>
             </div>
           )}
-        </div>
-
-        {/* Desktop collapse toggle */}
-        <button
-          onClick={onToggleCollapse}
-          className="hidden lg:flex p-1 rounded hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition"
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>
+
+        {/* Desktop collapse toggle (expanded only — collapsed sidebar expands via logo) */}
+        {!collapsed && (
+          <button
+            onClick={onToggleCollapse}
+            className="hidden lg:flex p-1 rounded hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition"
+            aria-label="Collapse sidebar"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Project Selector (Sections 35 & 36) */}
@@ -204,20 +235,65 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </label>
 
             {accessibleProjects.length > 1 ? (
-              /* Dropdown if multiple projects available */
-              <div className="relative">
-                <select
-                  value={currentProjectId}
-                  onChange={(e) => setCurrentProjectId(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-zinc-100 text-xs font-semibold rounded-md py-2 pl-2.5 pr-8 appearance-none focus:outline-none focus:border-brand dark:focus:border-yellow-400 transition cursor-pointer"
+              /* Custom styled dropdown if multiple projects available */
+              <div className="relative" ref={projectMenuRef}>
+                <button
+                  onClick={() => setProjectMenuOpen(!projectMenuOpen)}
+                  aria-haspopup="listbox"
+                  aria-expanded={projectMenuOpen}
+                  className="w-full flex items-center justify-between gap-2 bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 border border-slate-300 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-brand/40 dark:focus:ring-yellow-400/40 text-xs font-semibold rounded-md py-2 pl-2.5 pr-2 transition"
                 >
-                  {accessibleProjects.map((p) => (
-                    <option key={p.id} value={p.id} className="bg-white dark:bg-zinc-900 text-slate-900 dark:text-zinc-200">
-                      {p.name} — {p.id}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400" />
+                  <span className="truncate text-left text-slate-900 dark:text-zinc-100">
+                    {currentProject?.name}
+                  </span>
+                  <span className="flex items-center gap-1 shrink-0">
+                    <span className="font-mono text-[10px] text-brand dark:text-yellow-300 font-bold">
+                      {currentProjectId.replace('PRJ-', '')}
+                    </span>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 text-slate-400 transition-transform ${projectMenuOpen ? 'rotate-180' : ''}`}
+                    />
+                  </span>
+                </button>
+
+                {projectMenuOpen && (
+                  <div
+                    role="listbox"
+                    className="absolute left-0 right-0 mt-1 rounded-lg border-2 border-slate-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 shadow-2xl z-50 p-1 overflow-y-auto max-h-64 animate-in fade-in slide-in-from-top-1 duration-150"
+                  >
+                    {accessibleProjects.map((p) => {
+                      const isActive = p.id === currentProjectId;
+                      return (
+                        <button
+                          key={p.id}
+                          role="option"
+                          aria-selected={isActive}
+                          onClick={() => {
+                            setCurrentProjectId(p.id);
+                            setProjectMenuOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between gap-2 px-2.5 py-2 my-0.5 text-xs rounded-md border transition ${
+                            isActive
+                              ? 'bg-brand-soft dark:bg-yellow-400/10 text-brand-dark dark:text-yellow-200 font-semibold border-brand-tint dark:border-yellow-400/40'
+                              : 'bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:border-brand dark:hover:border-yellow-400/60 hover:bg-slate-50 dark:hover:bg-zinc-800'
+                          }`}
+                        >
+                          <span className="truncate text-left">
+                            {p.name}
+                            <span className="block text-[10px] font-normal text-slate-400 dark:text-zinc-500">
+                              {p.location}
+                            </span>
+                          </span>
+                          {isActive ? (
+                            <Check className="w-3.5 h-3.5 shrink-0 text-brand dark:text-yellow-300" />
+                          ) : (
+                            <span className="font-mono text-[10px] text-slate-400 shrink-0">{p.id}</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             ) : (
               /* Static clean card if single project available */
@@ -275,6 +351,82 @@ export const Sidebar: React.FC<SidebarProps> = ({
           );
         })}
       </nav>
+
+      {/* Platform Overview & Workflow (moved from header) */}
+      <div className={`px-2 pb-1 ${collapsed ? 'flex justify-center' : ''}`}>
+        <button
+          onClick={() => setShowHelpModal(true)}
+          title="Platform Overview & Workflow"
+          className={`flex items-center gap-3 rounded-md text-xs font-medium transition-colors text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800/60 ${
+            collapsed ? 'p-2 justify-center' : 'px-3 py-2 w-full'
+          }`}
+        >
+          <HelpCircle className="w-4 h-4 shrink-0" />
+          {!collapsed && <span className="flex-1 text-left">Platform Overview</span>}
+        </button>
+      </div>
+
+      <Modal
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
+        title="SiteSync AI — Platform Overview & Workflow"
+        subtitle="AI-Powered Planning-to-Execution Bridge for Infrastructure Projects"
+        maxWidth="3xl"
+      >
+        <div className="space-y-4 text-xs text-slate-700 dark:text-zinc-300">
+          <div className="p-3 bg-brand-soft dark:bg-yellow-400/10 border border-brand-tint dark:border-yellow-400/30 rounded-md">
+            <div className="font-semibold text-brand-deep dark:text-yellow-200 flex items-center gap-2 mb-1">
+              <ShieldCheck className="w-4 h-4 text-brand dark:text-yellow-300" />
+              Core Principle: Field Evidence → AI Decision → Schedule Result
+            </div>
+            <p className="leading-relaxed text-brand-deep dark:text-yellow-200/90">
+              SiteSync AI ingests heterogeneous unstructured field reports (DPRs, site diaries,
+              spreadsheets), extracts actual execution progress events, matches them to structured
+              L5/L6 activities, evaluates confidence, flags contradictions, and keeps human planners
+              in full control.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="p-3 border border-slate-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900">
+              <span className="font-bold text-slate-900 dark:text-zinc-100 block mb-1">
+                1. Field Data Ingestion
+              </span>
+              <p className="text-slate-600 dark:text-zinc-400 leading-normal">
+                Upload DPRs (PDF), site logs (CSV), or contractor sheets (XLSX). The 5-stage
+                pipeline extracts events with entity recognition.
+              </p>
+            </div>
+            <div className="p-3 border border-slate-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900">
+              <span className="font-bold text-slate-900 dark:text-zinc-100 block mb-1">
+                2. L5/L6 Activity Matching
+              </span>
+              <p className="text-slate-600 dark:text-zinc-400 leading-normal">
+                Matches line numbers, spool IDs, equipment tags, and semantic descriptions.
+                Threshold &gt;90% auto-approves; 70–89% routes to Planner Review.
+              </p>
+            </div>
+            <div className="p-3 border border-slate-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900">
+              <span className="font-bold text-slate-900 dark:text-zinc-100 block mb-1">
+                3. Contradiction Detection
+              </span>
+              <p className="text-slate-600 dark:text-zinc-400 leading-normal">
+                Detects conflicting completion claims, progress discrepancies between contractor
+                and supervisor, and prerequisite violations.
+              </p>
+            </div>
+            <div className="p-3 border border-slate-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900">
+              <span className="font-bold text-slate-900 dark:text-zinc-100 block mb-1">
+                4. Execution Memory &amp; Copilot
+              </span>
+              <p className="text-slate-600 dark:text-zinc-400 leading-normal">
+                Learns historical activity durations and delay root causes from past oil &amp; gas
+                projects, providing conversational insights to planners.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Modal>
 
       {/* User profile footer */}
       <div className="p-3 border-t border-slate-200 dark:border-zinc-800 bg-slate-50/80 dark:bg-zinc-900/60">
