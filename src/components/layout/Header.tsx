@@ -8,20 +8,18 @@ import {
   Menu,
   Search,
   Bell,
-  HelpCircle,
   Sun,
   Moon,
   CheckCheck,
   ChevronRight,
-  ShieldCheck,
   User,
   LogOut,
   Sparkles,
+  X,
   ChevronDown,
   Monitor,
   Check,
 } from 'lucide-react';
-import { Modal } from '../ui/Modal';
 import { useTheme } from '../../context/ThemeContext';
 
 interface HeaderProps {
@@ -53,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showThemeMenu, setShowThemeMenu] = useState(false);
-  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -151,25 +149,58 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar }) => {
 
       {/* Right side: Search, Notifications, Theme toggle, Help, Profile */}
       <div className="flex items-center gap-2 lg:gap-3">
-        {/* Search bar */}
-        <div className="relative hidden md:block w-48 lg:w-64">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search activities, WBS, events..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 text-xs rounded-md bg-slate-100 dark:bg-zinc-800 border border-transparent focus:border-brand dark:focus:border-yellow-400 text-slate-900 dark:text-zinc-100 placeholder-slate-400 focus:outline-none transition"
-          />
+        {/* Search: icon that expands into an input */}
+        <div className="hidden md:flex items-center">
+          {searchOpen ? (
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                autoFocus
+                type="text"
+                placeholder="Search activities, WBS, events..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    setSearchOpen(false);
+                    setSearchQuery('');
+                  }
+                }}
+                className="w-56 lg:w-72 pl-8 pr-8 py-1.5 text-xs rounded-md bg-slate-100 dark:bg-zinc-800 border border-transparent focus:border-brand dark:focus:border-yellow-400 text-slate-900 dark:text-zinc-100 placeholder-slate-400 focus:outline-none transition"
+              />
+              <button
+                onClick={() => {
+                  setSearchOpen(false);
+                  setSearchQuery('');
+                }}
+                aria-label="Close search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 transition"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setSearchOpen(true)}
+              aria-label="Open search"
+              title="Search"
+              className="p-1.5 rounded-md text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
-        {/* Data freshness indicator */}
-        <div className="hidden xl:flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 bg-slate-100 dark:bg-zinc-800/60 px-2.5 py-1 rounded-full border border-slate-200 dark:border-zinc-700">
+        {/* Live data freshness indicator */}
+        <div
+          className="hidden xl:flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-900"
+          title="Live • Synchronized 2 min ago"
+        >
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand dark:bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-brand dark:bg-emerald-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span>Live • Synchronized 2 min ago</span>
+          <span>Live</span>
         </div>
 
         {/* Text size control (accessibility): 50%–150% in 10% steps */}
@@ -295,16 +326,6 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar }) => {
             </div>
           )}
         </div>
-
-        {/* Help icon */}
-        <button
-          onClick={() => setShowHelpModal(true)}
-          className="p-1.5 rounded-md text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition"
-          aria-label="Help and Architecture Overview"
-          title="Product Architecture & Guide"
-        >
-          <HelpCircle className="w-4 h-4" />
-        </button>
 
         {/* Notification bell & dropdown */}
         <div className="relative" ref={notificationMenuRef}>
@@ -495,69 +516,6 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar }) => {
           )}
         </div>
       </div>
-
-      {/* Help / Architecture modal */}
-      <Modal
-        isOpen={showHelpModal}
-        onClose={() => setShowHelpModal(false)}
-        title="SiteSync AI — Platform Overview & Workflow"
-        subtitle="AI-Powered Planning-to-Execution Bridge for Infrastructure Projects"
-        maxWidth="3xl"
-      >
-        <div className="space-y-4 text-xs text-slate-700 dark:text-zinc-300">
-          <div className="p-3 bg-brand-soft dark:bg-yellow-400/10 border border-brand-tint dark:border-yellow-400/30 rounded-md">
-            <div className="font-semibold text-brand-deep dark:text-yellow-200 flex items-center gap-2 mb-1">
-              <ShieldCheck className="w-4 h-4 text-brand dark:text-yellow-300" />
-              Core Principle: Field Evidence → AI Decision → Schedule Result
-            </div>
-            <p className="leading-relaxed text-brand-deep dark:text-yellow-200">
-              SiteSync AI ingests heterogeneous unstructured field reports (DPRs, site diaries,
-              spreadsheets), extracts actual execution progress events, matches them to structured
-              L5/L6 activities, evaluates confidence, flags contradictions, and keeps human planners
-              in full control.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="p-3 border border-slate-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900">
-              <span className="font-bold text-slate-900 dark:text-zinc-100 block mb-1">
-                1. Field Data Ingestion
-              </span>
-              <p className="text-slate-600 dark:text-zinc-400 leading-normal">
-                Upload DPRs (PDF), site logs (CSV), or contractor sheets (XLSX). The 5-stage
-                pipeline extracts events with entity recognition.
-              </p>
-            </div>
-            <div className="p-3 border border-slate-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900">
-              <span className="font-bold text-slate-900 dark:text-zinc-100 block mb-1">
-                2. L5/L6 Activity Mapping
-              </span>
-              <p className="text-slate-600 dark:text-zinc-400 leading-normal">
-                Matches line numbers, spool IDs, equipment tags, and semantic descriptions.
-                Threshold &gt;90% auto-approves; 70–89% routes to Planner Review.
-              </p>
-            </div>
-            <div className="p-3 border border-slate-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900">
-              <span className="font-bold text-slate-900 dark:text-zinc-100 block mb-1">
-                3. Contradiction Detection
-              </span>
-              <p className="text-slate-600 dark:text-zinc-400 leading-normal">
-                Detects conflicting completion claims, progress discrepancies between contractor
-                and supervisor, and prerequisite violations.
-              </p>
-            </div>
-            <div className="p-3 border border-slate-200 dark:border-zinc-800 rounded-md bg-white dark:bg-zinc-900">
-              <span className="font-bold text-slate-900 dark:text-zinc-100 block mb-1">
-                4. Execution Memory &amp; Copilot
-              </span>
-              <p className="text-slate-600 dark:text-zinc-400 leading-normal">
-                Learns historical activity durations and delay root causes from past oil &amp; gas
-                projects, providing conversational insights to planners.
-              </p>
-            </div>
-          </div>
-        </div>
-      </Modal>
     </header>
   );
 };
