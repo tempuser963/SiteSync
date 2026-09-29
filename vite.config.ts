@@ -9,6 +9,6 @@ export default defineConfig({
   ],
 
   preview: {
-    allowedHosts: ['karyasetu-4f6u.onrender.com'],
+    allowedHosts: ['karyasetu-ai-o5yd.onrender.com'],
   },
 })
