@@ -9,6 +9,6 @@ export default defineConfig({
   ],
 
   preview: {
-    allowedHosts: ['sitesync-guwq.onrender.com'],
+    allowedHosts: ['karyasetu-4f6u.onrender.com'],
   },
 })
