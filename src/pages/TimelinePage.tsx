@@ -282,7 +282,7 @@ export const TimelinePage: React.FC = () => {
       {/* Vertical Event Timeline */}
       <Card
         title="Chronological Field Event Stream"
-        subtitle="Verifiable field evidence trail extracted by SiteSync AI"
+        subtitle="Verifiable field evidence trail extracted by KaryaSetu AI"
       >
         <div className="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-2 sm:before:left-3 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-200 dark:before:bg-zinc-700">
           {currentEvents.map((evt, idx) => (

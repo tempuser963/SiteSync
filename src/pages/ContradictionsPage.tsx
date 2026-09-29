@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { Contradiction } from '../types';
 
-export const ContradictionsPage: React.FC = () => {
+export const ContradictionsPage: React.FC<{ embedded?: boolean }> = ({ embedded = false }) => {
   const { contradictions, resolveContradiction, stats } = useProject();
   const { hasPermission } = useAuth();
   const canResolve = hasPermission('RESOLVE_CONTRADICTION');
@@ -56,8 +56,7 @@ export const ContradictionsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-zinc-800">
+      {!embedded && <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-zinc-100">
@@ -78,7 +77,7 @@ export const ContradictionsPage: React.FC = () => {
             <span>Read-Only View • Planner Authority Required to Resolve</span>
           </div>
         )}
-      </div>
+      </div>}
 
       {/* Summary Cards: 7 Total, 2 High, 3 Medium, 2 Low */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">

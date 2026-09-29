@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SiteSync AI — AI-Powered Planning-to-Execution Bridge for Infrastructure Projects</title>
+    <title>KaryaSetu AI — Connecting Plans to Progress</title>
     <meta name="description" content="AI platform that ingests field execution data, correlates progress with L5/L6 schedules, detects contradictions, and builds historical execution memory." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,14 @@
     <script>
       (function() {
         try {
-          var stored = localStorage.getItem('sitesync_theme');
+          var stored = localStorage.getItem('karyasetu_theme');
+          if (!stored) {
+            stored = localStorage.getItem('sitesync_theme');
+            if (stored) {
+              localStorage.setItem('karyasetu_theme', stored);
+              localStorage.removeItem('sitesync_theme');
+            }
+          }
           var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
           if (stored === 'dark' || (stored === 'system' && prefersDark)) {
             document.documentElement.classList.add('dark');

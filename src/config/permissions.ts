@@ -73,7 +73,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'VIEW_DASHBOARD',
     'VIEW_ACTIVITIES',
     'UPLOAD_REPORT',
-    'USE_COPILOT',
   ],
   PROJECT_PLANNER: [
     'VIEW_DASHBOARD',
@@ -84,9 +83,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'REJECT_MAPPING',
     'RESOLVE_CONTRADICTION',
     'VIEW_MEMORY',
-    'USE_COPILOT',
-    'MANAGE_AI_SETTINGS',
-    'VIEW_AUDIT_LOG',
   ],
   PROJECT_MANAGER: [
     'VIEW_DASHBOARD',
@@ -95,13 +91,14 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'VIEW_MEMORY',
     'USE_COPILOT',
     'MANAGE_PROJECTS',
+    'MANAGE_AI_SETTINGS',
+    'VIEW_AUDIT_LOG',
   ],
   DISCIPLINE_ENGINEER: [
     'VIEW_DASHBOARD',
     'VIEW_PROGRESS',
     'VIEW_ACTIVITIES',
     'UPLOAD_REPORT',
-    'USE_COPILOT',
   ],
 };
 

@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { ActivityMatch } from '../types';
 
-export const ReviewPage: React.FC = () => {
+export const ReviewPage: React.FC<{ embedded?: boolean }> = ({ embedded = false }) => {
   const {
     activityMatches,
     activities,
@@ -81,8 +81,7 @@ export const ReviewPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-zinc-800">
+      {!embedded && <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-zinc-100">
@@ -103,7 +102,7 @@ export const ReviewPage: React.FC = () => {
             <span>Read-Only View • Planner Authority Required to Approve</span>
           </div>
         )}
-      </div>
+      </div>}
 
       {/* Tabs */}
       <div className="flex items-center gap-2 border-b border-slate-200 dark:border-zinc-800 pb-2 text-xs font-medium overflow-x-auto">

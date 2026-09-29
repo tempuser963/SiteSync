@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useProject } from '../../context/ProjectContext';
 import { useAuth } from '../../auth/AuthContext';
-import { ROLE_LABELS, ROLE_BADGES } from '../../config/permissions';
+import { ROLE_LABELS } from '../../config/permissions';
 import {
   LayoutDashboard,
   TrendingUp,
   GitMerge,
   CheckSquare,
+  ClipboardCheck,
   AlertTriangle,
   History,
   UploadCloud,
@@ -19,7 +20,6 @@ import {
   ChevronDown,
   Layers,
   ChevronLeft,
-  ChevronRight,
   Shield,
   FileCheck,
   Check,
@@ -35,6 +35,18 @@ interface SidebarProps {
   onMobileClose?: () => void;
 }
 
+type NavItem = {
+  to: string;
+  label: string;
+  icon: React.ElementType;
+  permission: Permission;
+  permissions?: Permission[];
+  visible: boolean;
+  badge?: number;
+  badgeVariant?: 'warning' | 'danger';
+  children?: NavItem[];
+};
+
 export const Sidebar: React.FC<SidebarProps> = ({
   collapsed,
   onToggleCollapse,
@@ -49,9 +61,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   } = useProject();
 
   const { user, hasPermission } = useAuth();
+  const location = useLocation();
 
   const [projectMenuOpen, setProjectMenuOpen] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [executionOpen, setExecutionOpen] = useState(
+    location.pathname === '/timeline' || location.pathname === '/memory'
+  );
   const projectMenuRef = useRef<HTMLDivElement>(null);
 
   // Close project dropdown on outside click
@@ -72,40 +88,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
       : projects.filter((p) => user?.projectIds.includes(p.id));
 
   const role = user?.role || 'PROJECT_PLANNER';
-  const roleBadge = ROLE_BADGES[role];
 
   // Dynamic role-aware navigation configuration (Section 26)
-  const navItems: {
-    to: string;
-    label: string;
-    icon: any;
-    permission: Permission;
-    badge?: number;
-    badgeVariant?: 'warning' | 'danger';
-  }[] = [
+  const navItems: NavItem[] = [
     {
       to: '/dashboard',
       label: 'Dashboard',
       icon: LayoutDashboard,
       permission: 'VIEW_DASHBOARD',
+      visible: true,
     },
     {
       to: '/progress',
       label: 'Progress Intelligence',
       icon: TrendingUp,
       permission: 'VIEW_PROGRESS',
+      visible: role !== 'DISCIPLINE_ENGINEER',
+    },
+    {
+      to: '/field-operations',
+      label: 'Field Operations',
+      icon: ClipboardCheck,
+      permission: 'APPROVE_MAPPING',
+      permissions: ['APPROVE_MAPPING', 'RESOLVE_CONTRADICTION'],
+      visible: role !== 'ADMIN',
     },
     {
       to: '/activities',
       label: role === 'SITE_SUPERVISOR' ? 'My Activities' : 'Activity Mapping',
       icon: GitMerge,
       permission: 'VIEW_ACTIVITIES',
+      visible: true,
     },
     {
       to: '/incoming',
       label: 'Incoming Field Updates',
       icon: Inbox,
       permission: 'APPROVE_MAPPING',
+      visible: role === 'ADMIN',
       badge: stats.pendingFieldUpdates > 0 ? stats.pendingFieldUpdates : undefined,
       badgeVariant: 'warning' as const,
     },
@@ -114,6 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Review Center',
       icon: CheckSquare,
       permission: 'APPROVE_MAPPING',
+      visible: role === 'ADMIN',
       badge: stats.pendingReview > 0 ? stats.pendingReview : undefined,
       badgeVariant: 'warning',
     },
@@ -122,63 +143,168 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Contradictions',
       icon: AlertTriangle,
       permission: 'RESOLVE_CONTRADICTION',
+      visible: role === 'ADMIN',
       badge: stats.contradictions > 0 ? stats.contradictions : undefined,
       badgeVariant: 'danger',
+    },
+    {
+      to: '#execution',
+      label: 'Execution',
+      icon: History,
+      permission: 'VIEW_PROGRESS',
+      visible: role === 'PROJECT_PLANNER' || role === 'PROJECT_MANAGER',
+      children: [
+        {
+          to: '/timeline',
+          label: 'Execution Timeline',
+          icon: History,
+          permission: 'VIEW_PROGRESS',
+          visible: true,
+        },
+        {
+          to: '/memory',
+          label: 'Execution Memory',
+          icon: BrainCircuit,
+          permission: 'VIEW_MEMORY',
+          visible: true,
+        },
+      ],
     },
     {
       to: '/timeline',
       label: 'Execution Timeline',
       icon: History,
       permission: 'VIEW_PROGRESS',
+      visible: role !== 'PROJECT_PLANNER' && role !== 'PROJECT_MANAGER',
     },
     {
       to: '/report',
       label: 'Report Progress',
       icon: ClipboardPen,
       permission: 'UPLOAD_REPORT',
+      visible: role !== 'PROJECT_PLANNER',
     },
     {
       to: '/ingestion',
       label: role === 'SITE_SUPERVISOR' ? 'My Reports' : 'Reports & Ingestion',
       icon: UploadCloud,
       permission: 'UPLOAD_REPORT',
+      visible: role !== 'PROJECT_PLANNER',
+    },
+    {
+      to: '/report',
+      label: 'Progress Reporting',
+      icon: ClipboardPen,
+      permission: 'UPLOAD_REPORT',
+      visible: role === 'PROJECT_PLANNER',
     },
     {
       to: '/memory',
       label: 'Execution Memory',
       icon: BrainCircuit,
       permission: 'VIEW_MEMORY',
+      visible: role !== 'PROJECT_PLANNER' && role !== 'PROJECT_MANAGER',
     },
     {
       to: '/copilot',
       label: 'AI Copilot',
       icon: Bot,
       permission: 'USE_COPILOT',
+      visible: true,
     },
     {
       to: '/users',
       label: 'Users & Roles',
       icon: Shield,
       permission: 'MANAGE_USERS',
+      visible: true,
     },
     {
       to: '/audit',
       label: 'Audit Logs',
       icon: FileCheck,
       permission: 'VIEW_AUDIT_LOG',
+      visible: true,
     },
     {
       to: '/settings',
       label: 'Settings',
       icon: Settings,
       permission: 'MANAGE_AI_SETTINGS',
+      visible: true,
     },
   ];
 
   // Filter items based on permissions
   const visibleNavItems = navItems.filter((item) =>
-    hasPermission(item.permission)
+    item.visible && (item.permissions?.some((permission) => hasPermission(permission)) ?? hasPermission(item.permission))
   );
+
+  const renderNavItem = (item: NavItem, nested = false): React.ReactNode => {
+    const Icon = item.icon;
+    const childItems = item.children?.filter(
+      (child) => child.visible && hasPermission(child.permission)
+    );
+    const hasActiveChild = childItems?.some((child) => location.pathname === child.to) ?? false;
+    const isExecutionOpen = executionOpen || hasActiveChild;
+
+    if (childItems?.length) {
+      return (
+        <React.Fragment key={item.to}>
+          <button
+            type="button"
+            onClick={() => setExecutionOpen((open) => !open)}
+            title={collapsed ? item.label : undefined}
+            aria-expanded={isExecutionOpen}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
+              hasActiveChild
+                ? 'bg-brand-soft text-brand-dark dark:bg-yellow-400/15 dark:text-yellow-200 font-semibold border-l-2 border-brand dark:border-yellow-400 pl-2.5 shadow-2xs'
+                : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800/60'
+            } ${collapsed ? 'justify-center px-0' : ''}`}
+          >
+            <Icon className="w-4 h-4 shrink-0" />
+            {!collapsed && <span className="flex-1 truncate text-left">{item.label}</span>}
+            {!collapsed && (
+              <ChevronDown
+                className={`w-3.5 h-3.5 transition-transform ${isExecutionOpen ? 'rotate-180' : ''}`}
+              />
+            )}
+          </button>
+          {isExecutionOpen && childItems.map((child) => renderNavItem(child, true))}
+        </React.Fragment>
+      );
+    }
+
+    return (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        onClick={onMobileClose}
+        title={collapsed ? item.label : undefined}
+        className={({ isActive }) =>
+          `flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
+            isActive
+              ? 'bg-brand-soft text-brand-dark dark:bg-yellow-400/15 dark:text-yellow-200 font-semibold border-l-2 border-brand dark:border-yellow-400 pl-2.5 shadow-2xs'
+              : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800/60'
+          } ${nested ? 'ml-4' : ''} ${collapsed ? 'justify-center px-0 ml-0' : ''}`
+        }
+      >
+        <Icon className="w-4 h-4 shrink-0" />
+        {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
+        {!collapsed && item.badge !== undefined && (
+          <span
+            className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+              item.badgeVariant === 'danger'
+                ? 'bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-500/20 dark:text-rose-300 dark:border-rose-500/30'
+                : 'bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30'
+            }`}
+          >
+            {item.badge}
+          </span>
+        )}
+      </NavLink>
+    );
+  };
 
   return (
     <aside
@@ -204,7 +330,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {!collapsed && (
             <div className="flex flex-col">
               <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-white leading-none">
-                SiteSync <span className="text-brand dark:text-yellow-300">AI</span>
+                KaryaSetu <span className="text-brand dark:text-yellow-300">AI</span>
               </span>
               <span className="text-[10px] text-slate-500 dark:text-zinc-400 leading-tight mt-0.5 font-medium tracking-wide uppercase">
                 EPC Execution Bridge
@@ -318,38 +444,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Navigation list */}
       <nav className="flex-1 overflow-y-auto p-2 space-y-1">
-        {visibleNavItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={onMobileClose}
-              title={collapsed ? item.label : undefined}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-colors ${
-                  isActive
-                    ? 'bg-brand-soft text-brand-dark dark:bg-yellow-400/15 dark:text-yellow-200 font-semibold border-l-2 border-brand dark:border-yellow-400 pl-2.5 shadow-2xs'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800/60'
-                } ${collapsed ? 'justify-center px-0' : ''}`
-              }
-            >
-              <Icon className="w-4 h-4 shrink-0" />
-              {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
-              {!collapsed && item.badge !== undefined && (
-                <span
-                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                    item.badgeVariant === 'danger'
-                      ? 'bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-500/20 dark:text-rose-300 dark:border-rose-500/30'
-                      : 'bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30'
-                  }`}
-                >
-                  {item.badge}
-                </span>
-              )}
-            </NavLink>
-          );
-        })}
+        {visibleNavItems.map((item) => renderNavItem(item))}
       </nav>
 
       {/* Platform Overview & Workflow (moved from header) */}
@@ -369,7 +464,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <Modal
         isOpen={showHelpModal}
         onClose={() => setShowHelpModal(false)}
-        title="SiteSync AI — Platform Overview & Workflow"
+        title="KaryaSetu AI — Platform Overview & Workflow"
         subtitle="AI-Powered Planning-to-Execution Bridge for Infrastructure Projects"
         maxWidth="3xl"
       >
@@ -380,7 +475,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               Core Principle: Field Evidence → AI Decision → Schedule Result
             </div>
             <p className="leading-relaxed text-brand-deep dark:text-yellow-200/90">
-              SiteSync AI ingests heterogeneous unstructured field reports (DPRs, site diaries,
+              KaryaSetu AI ingests heterogeneous unstructured field reports (DPRs, site diaries,
               spreadsheets), extracts actual execution progress events, matches them to structured
               L5/L6 activities, evaluates confidence, flags contradictions, and keeps human planners
               in full control.

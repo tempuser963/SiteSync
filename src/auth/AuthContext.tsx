@@ -31,18 +31,45 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const STORAGE_KEY_AUTH = 'sitesync_auth';
-const STORAGE_KEY_USER = 'sitesync_current_user';
-const STORAGE_KEY_USERS = 'sitesync_users';
+const STORAGE_KEY_AUTH = 'karyasetu_auth';
+const STORAGE_KEY_USER = 'karyasetu_current_user';
+const STORAGE_KEY_USERS = 'karyasetu_users';
+const STORAGE_KEY_REMEMBER_ME = 'karyasetu_remember_me';
+
+const migrateStorageKey = (legacyKey: string, currentKey: string) => {
+  try {
+    const legacyValue = localStorage.getItem(legacyKey);
+    if (localStorage.getItem(currentKey) === null && legacyValue !== null) {
+      localStorage.setItem(currentKey, legacyValue);
+    }
+    if (legacyValue !== null) localStorage.removeItem(legacyKey);
+  } catch {
+    // Ignore unavailable browser storage.
+  }
+};
+
+const normalizeUserEmail = (email: string) =>
+  email.replace(/@sitesync\.ai$/i, '@karyasetu.ai');
+
+const normalizeStoredUsers = (storedUsers: string): User[] =>
+  (JSON.parse(storedUsers) as User[]).map((storedUser) => ({
+    ...storedUser,
+    email: normalizeUserEmail(storedUser.email),
+  }));
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  migrateStorageKey('sitesync_auth', STORAGE_KEY_AUTH);
+  migrateStorageKey('sitesync_current_user', STORAGE_KEY_USER);
+  migrateStorageKey('sitesync_users', STORAGE_KEY_USERS);
+  migrateStorageKey('sitesync_remember_me', STORAGE_KEY_REMEMBER_ME);
+
   // Initialize users list from localStorage or fallback to mockUsers
   const [users, setUsers] = useState<User[]>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY_USERS);
-      if (stored) return JSON.parse(stored);
+      if (stored) return normalizeStoredUsers(stored);
     } catch {
       // ignore
     }
@@ -53,12 +80,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY_USER);
-      if (stored) return JSON.parse(stored);
+      if (stored) {
+        const storedUser = JSON.parse(stored) as User;
+        return { ...storedUser, email: normalizeUserEmail(storedUser.email) };
+      }
     } catch {
       // ignore
     }
     // Default logged-in user is Rahul Kumar (Project Planner)
-    return mockUsers.find((u) => u.email === 'planner@sitesync.ai') || mockUsers[2];
+    return mockUsers.find((u) => u.email === 'planner@karyasetu.ai') || mockUsers[2];
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -137,7 +167,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsAuthenticated(true);
 
     if (rememberMe) {
-      localStorage.setItem('sitesync_remember_me', 'true');
+      localStorage.setItem(STORAGE_KEY_REMEMBER_ME, 'true');
     }
 
     return { success: true };

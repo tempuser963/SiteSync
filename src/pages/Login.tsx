@@ -27,7 +27,7 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [email, setEmail] = useState('planner@sitesync.ai');
+  const [email, setEmail] = useState('planner@karyasetu.ai');
   const [password, setPassword] = useState('Planner@123');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -62,7 +62,7 @@ export const Login: React.FC = () => {
     setLoading(false);
 
     if (result.success) {
-      showToast('Welcome back to SiteSync AI', 'success');
+      showToast('Welcome back to KaryaSetu AI', 'success');
       navigate(from, { replace: true });
     } else {
       setErrorMessage(result.error || 'Authentication failed.');
@@ -143,7 +143,7 @@ export const Login: React.FC = () => {
             <span className="text-xl">◈</span>
           </div>
           <span className="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">
-            SiteSync <span className="text-brand dark:text-yellow-300">AI</span>
+            KaryaSetu <span className="text-brand dark:text-yellow-300">AI</span>
           </span>
         </div>
 

@@ -18,8 +18,9 @@ import { IngestionPage } from './pages/IngestionPage';
 import { MemoryPage } from './pages/MemoryPage';
 import { CopilotPage } from './pages/CopilotPage';
 import { SettingsPage } from './pages/SettingsPage';
-import { ReportProgressPage } from './pages/ReportProgressPage';
+import { ProgressReportingPage } from './pages/ProgressReportingPage';
 import { FieldUpdatesPage } from './pages/FieldUpdatesPage';
+import { FieldOperationsPage } from './pages/FieldOperationsPage';
 
 // Authentication & Identity pages
 import { Login } from './pages/Login';
@@ -102,6 +103,11 @@ export function App() {
               />
 
               <Route
+                path="field-operations"
+                element={<FieldOperationsPage />}
+              />
+
+              <Route
                 path="timeline"
                 element={
                   <RoleGuard requiredPermission="VIEW_PROGRESS">
@@ -123,7 +129,7 @@ export function App() {
                 path="report"
                 element={
                   <RoleGuard requiredPermission="UPLOAD_REPORT">
-                    <ReportProgressPage />
+                    <ProgressReportingPage />
                   </RoleGuard>
                 }
               />

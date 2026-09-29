@@ -8,8 +8,20 @@ import {
   FONT_SCALE_STEP,
 } from '../context/ThemeContext';
 
-const STORAGE_KEY = 'sitesync_theme';
-const FONT_STORAGE_KEY = 'sitesync_font_scale';
+const STORAGE_KEY = 'karyasetu_theme';
+const FONT_STORAGE_KEY = 'karyasetu_font_scale';
+
+const migrateStorageKey = (legacyKey: string, currentKey: string) => {
+  try {
+    const legacyValue = localStorage.getItem(legacyKey);
+    if (localStorage.getItem(currentKey) === null && legacyValue !== null) {
+      localStorage.setItem(currentKey, legacyValue);
+    }
+    if (legacyValue !== null) localStorage.removeItem(legacyKey);
+  } catch {
+    // Ignore unavailable browser storage.
+  }
+};
 
 const clampFontScale = (value: number): FontScale =>
   Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, value));
@@ -26,6 +38,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
   defaultTheme = 'light',
 }) => {
+  migrateStorageKey('sitesync_theme', STORAGE_KEY);
+  migrateStorageKey('sitesync_font_scale', FONT_STORAGE_KEY);
+
   const [theme, setThemeState] = useState<Theme>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;

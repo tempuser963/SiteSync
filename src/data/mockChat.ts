@@ -4,7 +4,7 @@ export const initialMessages: ChatMessage[] = [
   {
     id: 'msg-0',
     role: 'assistant',
-    content: `Hello. I am the SiteSync AI Copilot for project OILFIELD EXPANSION (PRJ-001).
+    content: `Hello. I am the KaryaSetu AI Copilot for project OILFIELD EXPANSION (PRJ-001).
 
 I can help you understand:
 - Project execution status and progress analytics

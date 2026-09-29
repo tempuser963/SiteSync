@@ -4,7 +4,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-001',
     name: 'Arjun Mehta',
-    email: 'admin@sitesync.ai',
+    email: 'admin@karyasetu.ai',
     password: 'Admin@123',
     role: 'ADMIN',
     department: 'Digital Projects',
@@ -15,7 +15,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-002',
     name: 'Priya Sharma',
-    email: 'manager@sitesync.ai',
+    email: 'manager@karyasetu.ai',
     password: 'Manager@123',
     role: 'PROJECT_MANAGER',
     department: 'Project Management',
@@ -26,7 +26,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-003',
     name: 'Rahul Kumar',
-    email: 'planner@sitesync.ai',
+    email: 'planner@karyasetu.ai',
     password: 'Planner@123',
     role: 'PROJECT_PLANNER',
     department: 'Planning & Controls',
@@ -37,7 +37,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-004',
     name: 'Vikram Singh',
-    email: 'engineer@sitesync.ai',
+    email: 'engineer@karyasetu.ai',
     password: 'Engineer@123',
     role: 'DISCIPLINE_ENGINEER',
     department: 'Execution',
@@ -49,7 +49,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-005',
     name: 'Suresh Patel',
-    email: 'supervisor@sitesync.ai',
+    email: 'supervisor@karyasetu.ai',
     password: 'Supervisor@123',
     role: 'SITE_SUPERVISOR',
     department: 'Field Execution',
@@ -60,7 +60,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-006',
     name: 'Ananya Rao',
-    email: 'viewer@sitesync.ai',
+    email: 'viewer@karyasetu.ai',
     password: 'Viewer@123',
     role: 'PROJECT_MANAGER',
     department: 'Management',
@@ -72,7 +72,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-007',
     name: 'Ahmed Al-Rashidi',
-    email: 'ahmed.r@sitesync.ai',
+    email: 'ahmed.r@karyasetu.ai',
     password: 'User@1234',
     role: 'PROJECT_PLANNER',
     department: 'Planning & Controls',
@@ -83,7 +83,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-008',
     name: 'Sarah Mitchell',
-    email: 'sarah.m@sitesync.ai',
+    email: 'sarah.m@karyasetu.ai',
     password: 'User@1234',
     role: 'DISCIPLINE_ENGINEER',
     department: 'Quality Assurance',
@@ -95,7 +95,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-009',
     name: 'James Thornton',
-    email: 'james.t@sitesync.ai',
+    email: 'james.t@karyasetu.ai',
     password: 'User@1234',
     role: 'SITE_SUPERVISOR',
     department: 'Piping Discipline',
@@ -106,7 +106,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-010',
     name: 'Maria Santos',
-    email: 'maria.s@sitesync.ai',
+    email: 'maria.s@karyasetu.ai',
     password: 'User@1234',
     role: 'DISCIPLINE_ENGINEER',
     department: 'Instrumentation',
@@ -118,7 +118,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-011',
     name: 'David Chen',
-    email: 'david.c@sitesync.ai',
+    email: 'david.c@karyasetu.ai',
     password: 'User@1234',
     role: 'PROJECT_MANAGER',
     department: 'Project Management',
@@ -129,7 +129,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-012',
     name: 'Fatima Zahra',
-    email: 'fatima.z@sitesync.ai',
+    email: 'fatima.z@karyasetu.ai',
     password: 'User@1234',
     role: 'PROJECT_MANAGER',
     department: 'Finance & EVM',
@@ -140,7 +140,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-013',
     name: 'Karthik Raman',
-    email: 'karthik.r@sitesync.ai',
+    email: 'karthik.r@karyasetu.ai',
     password: 'User@1234',
     role: 'SITE_SUPERVISOR',
     department: 'Civil Works',
@@ -152,7 +152,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-014',
     name: 'Elena Rostova',
-    email: 'elena.r@sitesync.ai',
+    email: 'elena.r@karyasetu.ai',
     password: 'User@1234',
     role: 'PROJECT_PLANNER',
     department: 'Planning & Controls',
@@ -163,7 +163,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-015',
     name: 'Tariq Mansoor',
-    email: 'tariq.m@sitesync.ai',
+    email: 'tariq.m@karyasetu.ai',
     password: 'User@1234',
     role: 'DISCIPLINE_ENGINEER',
     department: 'Electrical Systems',
@@ -175,7 +175,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-016',
     name: 'Omar Khaliq',
-    email: 'omar.k@sitesync.ai',
+    email: 'omar.k@karyasetu.ai',
     password: 'User@1234',
     role: 'SITE_SUPERVISOR',
     department: 'Mechanical Rigging',
@@ -186,7 +186,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-017',
     name: 'Lucas Dupont',
-    email: 'lucas.d@sitesync.ai',
+    email: 'lucas.d@karyasetu.ai',
     password: 'User@1234',
     role: 'PROJECT_MANAGER',
     department: 'Client Representative',
@@ -197,7 +197,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-018',
     name: 'Mei-Ling Zhou',
-    email: 'meiling.z@sitesync.ai',
+    email: 'meiling.z@karyasetu.ai',
     password: 'User@1234',
     role: 'DISCIPLINE_ENGINEER',
     department: 'HSE',
@@ -209,7 +209,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-019',
     name: 'Carlos Mendoza',
-    email: 'carlos.m@sitesync.ai',
+    email: 'carlos.m@karyasetu.ai',
     password: 'User@1234',
     role: 'SITE_SUPERVISOR',
     department: 'Field Piping',
@@ -220,7 +220,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-020',
     name: 'Aisha Al-Nuaimi',
-    email: 'aisha.n@sitesync.ai',
+    email: 'aisha.n@karyasetu.ai',
     password: 'User@1234',
     role: 'PROJECT_PLANNER',
     department: 'Planning & Controls',
@@ -231,7 +231,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-021',
     name: 'Patrick O Connor',
-    email: 'patrick.o@sitesync.ai',
+    email: 'patrick.o@karyasetu.ai',
     password: 'User@1234',
     role: 'PROJECT_MANAGER',
     department: 'Auditing & Compliance',
@@ -242,7 +242,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-022',
     name: 'Sunita Deshmukh',
-    email: 'sunita.d@sitesync.ai',
+    email: 'sunita.d@karyasetu.ai',
     password: 'User@1234',
     role: 'DISCIPLINE_ENGINEER',
     department: 'Civil Works',
@@ -253,7 +253,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-023',
     name: 'Hamad Al-Thani',
-    email: 'hamad.t@sitesync.ai',
+    email: 'hamad.t@karyasetu.ai',
     password: 'User@1234',
     role: 'SITE_SUPERVISOR',
     department: 'Fabrication Yard',
@@ -264,7 +264,7 @@ export const mockUsers: User[] = [
   {
     id: 'USR-024',
     name: 'Nadia Benali',
-    email: 'nadia.b@sitesync.ai',
+    email: 'nadia.b@karyasetu.ai',
     password: 'User@1234',
     role: 'PROJECT_PLANNER',
     department: 'Planning & Controls',
@@ -279,7 +279,7 @@ export const DEMO_CREDENTIALS = [
     roleName: 'Project Manager',
     role: 'PROJECT_MANAGER' as const,
     name: 'Priya Sharma',
-    email: 'manager@sitesync.ai',
+    email: 'manager@karyasetu.ai',
     password: 'Manager@123',
     desc: 'High-level project analytics, variance oversight, schedule approvals',
   },
@@ -287,7 +287,7 @@ export const DEMO_CREDENTIALS = [
     roleName: 'Planner / Scheduler',
     role: 'PROJECT_PLANNER' as const,
     name: 'Rahul Kumar',
-    email: 'planner@sitesync.ai',
+    email: 'planner@karyasetu.ai',
     password: 'Planner@123',
     desc: 'Validates field updates: Incoming queue, Match Review, Contradiction resolution',
   },
@@ -295,7 +295,7 @@ export const DEMO_CREDENTIALS = [
     roleName: 'Discipline Engineer',
     role: 'DISCIPLINE_ENGINEER' as const,
     name: 'Vikram Singh',
-    email: 'engineer@sitesync.ai',
+    email: 'engineer@karyasetu.ai',
     password: 'Engineer@123',
     desc: 'Discipline-scoped progress, remarks, and activity tracking',
   },
@@ -303,7 +303,7 @@ export const DEMO_CREDENTIALS = [
     roleName: 'Site Supervisor',
     role: 'SITE_SUPERVISOR' as const,
     name: 'Suresh Patel',
-    email: 'supervisor@sitesync.ai',
+    email: 'supervisor@karyasetu.ai',
     password: 'Supervisor@123',
     desc: 'Report Progress hub, AI Time Agent, DPR uploads, My Updates',
   },

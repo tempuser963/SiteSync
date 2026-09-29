@@ -88,7 +88,7 @@ export const ResetPassword: React.FC = () => {
             ◈
           </div>
           <span className="font-bold text-xl text-slate-900 dark:text-white">
-            SiteSync <span className="text-brand dark:text-yellow-300">AI</span>
+            KaryaSetu <span className="text-brand dark:text-yellow-300">AI</span>
           </span>
         </div>
         <h2 className="text-base font-bold text-slate-900 dark:text-white">Choose New Password</h2>

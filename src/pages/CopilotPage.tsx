@@ -91,7 +91,7 @@ If you are querying specific line items (e.g. Line 24-XX, Foundation F-101, or C
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-zinc-100 flex items-center gap-2">
               <Bot className="w-5 h-5 text-brand dark:text-yellow-300" />
-              SiteSync AI Copilot
+              KaryaSetu AI Copilot
             </h1>
             <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-brand-tint text-brand-deep dark:bg-yellow-400/15 dark:text-yellow-200">
               EPC Intelligence Assistant

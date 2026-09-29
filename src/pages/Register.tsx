@@ -158,7 +158,7 @@ export const Register: React.FC = () => {
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">Account Created</h3>
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1">
-                Welcome to SiteSync AI, <span className="font-semibold text-slate-900 dark:text-white">{createdUserName}</span>.
+                Welcome to KaryaSetu AI, <span className="font-semibold text-slate-900 dark:text-white">{createdUserName}</span>.
               </p>
             </div>
 
@@ -249,7 +249,7 @@ export const Register: React.FC = () => {
             <span className="text-lg">◈</span>
           </div>
           <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white">
-            SiteSync <span className="text-brand dark:text-yellow-300">AI</span>
+            KaryaSetu <span className="text-brand dark:text-yellow-300">AI</span>
           </span>
         </div>
         <h2 className="text-base font-bold text-slate-900 dark:text-white">
